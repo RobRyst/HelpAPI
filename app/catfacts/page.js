@@ -21,7 +21,7 @@ const Animals = () => {
 
     async function postCatFacts() {
         try {
-            const data = { text: data };
+            const data = { text: catfacts };
             const response = await axios.post(data);
             console.log('POST Request Response:', response.data);
             setCatFacts([...catfacts, response.data])
