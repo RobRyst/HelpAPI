@@ -5,33 +5,32 @@ import { useEffect, useState } from "react";
 
 const Animals = () => {
     const [catfacts, setCatFacts] = useState([])
-    //const [data, setData] = useState("") <-- Denne gjør at JSON.stringify ikke failer, men den skriver bare ut info i consollen OM den failer. 
+    const [data, setData] = useState("") //<-- Denne gjør at JSON.stringify ikke failer, men den skriver bare ut info i consollen OM den failer. 
 
-    GET()
-    .then((data) => {
-        //console logger riktig
-        console.log(data);
-        setCatFacts(data);
-    })
-    .catch((error) => {
-        console.error("Error fetching cat facts: ", error);
-    });
+    useEffect(() => {
+        GET()
+        .then((data) => {
+            //console logger riktig
+            console.log(data);
+            setCatFacts(data);
+        })
+        .catch((error) => {
+            console.error("Error fetching cat facts: ", error);
+        });
+    }, [])
 
     async function postCatFacts() {
         try {
-            const data = { data };
-            const response = await POST(data);
+            const data = { text: data };
+            const response = await axios.post(data);
             console.log('POST Request Response:', response.data);
-            setData(response?.data?.data)
+            setCatFacts([...catfacts, response.data])
+            setData("")
         } catch (error) {
             console.error('Error making POST request:', error);
         }
     }
     
-    //Prøvd å sette GET funksjonen inne i denne men da skriver den ikke ut noe. 
-    useEffect(() => {
-        GET();
-    }, [])
 
     return (
         <>
@@ -42,8 +41,8 @@ const Animals = () => {
             <section>
                 <input
                     type="text"
-                    value={catfacts}
-                    onChange={(e) => setCatFacts(e.target.value)}
+                    value={data}
+                    onChange={(e) => setData(e.target.value)}
                 />
                 <button onClick={postCatFacts}>Post Cat Fact</button>
                 <ul>
